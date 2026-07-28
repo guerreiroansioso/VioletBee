@@ -61,7 +61,7 @@ final class Reader {
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], /* 12 */
         ];
 
-        
+
 
         $count = count($tokens);
         for ($index = 0; $index < $count; $index++) {
@@ -78,5 +78,18 @@ final class Reader {
         preg_match_all($this->pattern, $text, $matches);
 
         return $matches[0] ?? [];
+    }
+
+    public function compile(string $text): array {
+        $matches = $this->tokenize($text);
+        $tokens = [];
+
+        foreach ($matches as $match) {
+            $tokens[] = $this->classify($match);
+        }
+
+        $semantic = $this->semantic($tokens);
+
+        return $semantic;
     }
 }
