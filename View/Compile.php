@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../Service/Reader.php';
 
 $reader = new Reader();
-$text = "# Heading\nRender test with Reader compile.\n- Hi.\n## Heading 2\n- Hello.\n- World.\n";
+$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item;\n\n## Heading 2\n\n### Heading 3\n\nThis is a note.";
 $compiled = $reader->compile($text);
 
 $input = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');

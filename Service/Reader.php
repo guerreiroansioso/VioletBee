@@ -8,6 +8,11 @@ final class Reader {
 
 		switch ($text) {
 			case '#':
+			case '##':
+			case '###':
+			case '####':
+			case '#####':
+			case '######':
 				return 1;
 			case '@':
 				return 2;
@@ -99,7 +104,7 @@ final class Reader {
 
 				case 2:
 					$block['type'] = 'Heading';
-					$block['level'] = ($block['level'] ?? 0) + 1;
+					$block['level'] = strlen($match);
 					break;
 
 				case 3:
@@ -107,12 +112,16 @@ final class Reader {
 					break;
 
 				case 4:
-					$block['text'] = trim($block['text'] . ' ' . $match);
+					$block['text'] = $block['text'] . ' ' . $match;
 					$blocks[] = $block;
 					$block = ['type' => 'Paragraph', 'text' => ''];
 					break;
 			}
 		}
+
+        foreach ($blocks as &$block) {
+            $block['text'] = trim($block['text']);
+        }
 
 		return $blocks;
 	}
