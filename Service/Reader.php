@@ -123,6 +123,41 @@ final class Reader {
             $block['text'] = trim($block['text']);
         }
 
-		return $blocks;
+			return $blocks;
+		}
+
+		public function render(array $blocks): string {
+			$html = '';
+
+			foreach ($blocks as $i => $block) {
+				$text = $block['text'];
+
+				switch ($block['type']) {
+					case 'Heading':
+						$level = $block['level'];
+                        $begin = '<h' . $level . '>';
+                        $end = '</h' . $level . '>';
+						$html .= $begin . $text . $end;
+						break;
+
+					case 'List':
+						if (($blocks[$i - 1]['type']) !== 'List') {
+							$html .= '<ul>';
+						}
+
+						$html .= '<li>' . $text . '</li>';
+
+						if (($blocks[$i + 1]['type']) !== 'List') {
+							$html .= '</ul>';
+						}
+						break;
+
+					case 'Paragraph':
+						$html .= '<p>' . $text . '</p>';
+						break;
+				}
+			}
+
+			return $html;
+		}
 	}
-}

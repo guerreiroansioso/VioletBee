@@ -1,3 +1,13 @@
+<?php
+
+require_once __DIR__ . '/../Service/Reader.php';
+
+$reader = new Reader();
+$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item.\n\n## Heading 2\n\n### Heading 3\n\nThis is a note.\n- Hi;\n- Second item;\n- Third item.";
+$compiled = $reader->compile($text);
+$html = $reader->render($compiled);
+
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -23,8 +33,7 @@
 
 	<main>
 		<section id="start">
-			<h2>Page not found</h2>
-			<p>The requested page does not exist.</p>
+			<?= $html ?>
 		</section>
 	</main>
 

@@ -8,6 +8,7 @@ $routes = [
 	'/contact' => $viewPath . '/Contact.php',
 	'/posts' => $viewPath . '/Posts.php',
 	'/compile' => $viewPath . '/Compile.php',
+	'/show' => $viewPath . '/Show.php',
 	'/404' => $viewPath . '/NotFound.php',
 ];
 

@@ -16,6 +16,7 @@
 				<li><a href="/posts">Posts</a></li>
 				<li><a href="/contact">Contact</a></li>
 				<li><a href="/compile">Compile</a></li>
+				<li><a href="/show">Show</a></li>
 			</ul>
 		</nav>
 	</header>
