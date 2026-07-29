@@ -1,7 +1,7 @@
 <?php
 
 final class Reader {
-	private string $pattern = '/\n|\S+/u';
+	private string $pattern = '/\n|[][]|[()]|[^\s[\]()]+/u';
 
 	public function classify(string $text): int {
 		if ($text === '') { return -1; }
@@ -50,16 +50,16 @@ final class Reader {
 		$semantic = [];
 
 		/* 0 = Skip, 1 = Text, 2 = Heading, */
-		/* 3 = List, 4 = End block */
+		/* 3 = List, 4 = End block, 5 = Link, 6 = End link */
 		$matrix = [
-			[1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0],
 			[2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+			[5, 0, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
@@ -113,6 +113,18 @@ final class Reader {
 
 				case 4:
 					$block['text'] = $block['text'] . ' ' . $match;
+					$blocks[] = $block;
+					$block = ['type' => 'Paragraph', 'text' => ''];
+					break;
+
+				case 5:
+					$block['type'] = 'Link';
+					$block['text'] = $block['text'] . $match;
+					break;
+
+				case 6:
+					$block['type'] = 'Link';
+					$block['text'] = $block['text'] . $match;
 					$blocks[] = $block;
 					$block = ['type' => 'Paragraph', 'text' => ''];
 					break;

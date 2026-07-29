@@ -3,12 +3,12 @@
 require_once __DIR__ . '/../Service/Reader.php';
 
 $reader = new Reader();
-$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item.\n\n## Heading 2\n\n### Heading 3\n\nThis is a note.";
+$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item.\n\n[Example](https://example.com)\n\n## Heading 2\n\n### Heading 3\n\nThis is a note.";
 $compiled = $reader->compile($text);
 
 $input = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 $output = htmlspecialchars(
-	json_encode($compiled, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), ENT_QUOTES,
+	json_encode($compiled, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), ENT_QUOTES,
 	'UTF-8'
 );
 
