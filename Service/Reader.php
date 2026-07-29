@@ -1,95 +1,119 @@
 <?php
 
 final class Reader {
-    private string $pattern = '/\b[A-Za-z_][A-Za-z0-9_]*\b/';
+	private string $pattern = '/\n|\S+/u';
 
-    public function classify(string $text): int {
-        if ($text === '') { return -1; }
+	public function classify(string $text): int {
+		if ($text === '') { return -1; }
 
-        switch ($text) {
-            case '#':
-                return 1;
-            case '@':
-                return 2;
-            case '-':
-            case '*':
-            case '+':
-                return 3;
-            case "\n":
-                return 4;
-            case '_':
-                return 5;
-            case '>':
-                return 6;
-            case '[':
-            case ']':
-            case '(':
-            case ')':
-                return 7;
-            case '!':
-                return 8;
-            case '`':
-                return 9;
-            case '~':
-                return 10;
-            case '|':
-                return 11;
-            case '\\':
-                return 12;
-            default:
-                return 0;
-        }
-    }
+		switch ($text) {
+			case '#':
+				return 1;
+			case '@':
+				return 2;
+			case '-':
+			case '*':
+			case '+':
+				return 3;
+			case "\n":
+				return 4;
+			case '_':
+				return 5;
+			case '>':
+				return 6;
+			case '[':
+			case ']':
+			case '(':
+			case ')':
+				return 7;
+			case '!':
+				return 8;
+			case '`':
+				return 9;
+			case '~':
+				return 10;
+			case '|':
+				return 11;
+			case '\\':
+				return 12;
+			default:
+				return 0;
+		}
+	}
 
-    public function semantic(array $tokens): array {
-        $semantic = [];
+	public function semantic(array $tokens): array {
+		$semantic = [];
 
-        $matrix = [
-            /* 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 */
-            [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], /* 0 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], /* 1 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], /* 2 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], /* 3 */
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], /* 4 */
-            [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0], /* 5 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], /* 6 */
-            [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], /* 7 */
-            [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], /* 8 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], /* 9 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], /* 10 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0], /* 11 */
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], /* 12 */
-        ];
+		/* 0 = Skip, 1 = Text, 2 = Heading, */
+		/* 3 = List, 4 = End block */
+		$matrix = [
+			[1, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0],
+			[2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		];
 
+		foreach ($tokens as $i => $token) {
+			$next = $tokens[$i + 1] ?? 4;
+			$semantic[] = $matrix[$token][$next];
+		}
 
+		return $semantic;
+	}
 
-        $count = count($tokens);
-        for ($index = 0; $index < $count; $index++) {
-            $current = $tokens[$index];
-            $next = $tokens[$index + 1] ?? 4;
-            $semantic[] = $matrix[$current][$next];
-        }
+	public function tokenize(string $text): array {
+		if ($text === '') { return []; }
+		preg_match_all($this->pattern, $text, $matches);
 
-        return $semantic;
-    }
+		return $matches[0] ?? [];
+	}
 
-    public function tokenize(string $text): array {
-        if ($text === '') { return []; }
-        preg_match_all($this->pattern, $text, $matches);
+	public function compile(string $text): array {
+		$matches = $this->tokenize($text);
 
-        return $matches[0] ?? [];
-    }
+		$tokens = [];
+		foreach ($matches as $match) {
+			$tokens[] = $this->classify($match);
+		}
 
-    public function compile(string $text): array {
-        $matches = $this->tokenize($text);
-        $tokens = [];
+		$semantic = $this->semantic($tokens);
 
-        foreach ($matches as $match) {
-            $tokens[] = $this->classify($match);
-        }
+		$blocks = [];
+		$block = ['type' => 'Paragraph', 'text' => ''];
+		foreach ($tokens as $i => $token) {
+			$match = $matches[$i];
 
-        $semantic = $this->semantic($tokens);
+			switch ($semantic[$i]) {
+				case 1:
+					$block['text'] = $block['text'] . ' ' . $match;
+					break;
 
-        return $semantic;
-    }
+				case 2:
+					$block['type'] = 'Heading';
+					$block['level'] = ($block['level'] ?? 0) + 1;
+					break;
+
+				case 3:
+					$block = ['type' => 'List', 'text' => ''];
+					break;
+
+				case 4:
+					$block['text'] = trim($block['text'] . ' ' . $match);
+					$blocks[] = $block;
+					$block = ['type' => 'Paragraph', 'text' => ''];
+					break;
+			}
+		}
+
+		return $blocks;
+	}
 }

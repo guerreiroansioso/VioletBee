@@ -1,3 +1,18 @@
+<?php
+
+require_once __DIR__ . '/../Service/Reader.php';
+
+$reader = new Reader();
+$text = "# Heading\nRender test with Reader compile.\n- Hi.\n## Heading 2\n- Hello.\n- World.\n";
+$compiled = $reader->compile($text);
+
+$input = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+$output = htmlspecialchars(
+	json_encode($compiled, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), ENT_QUOTES,
+	'UTF-8'
+);
+
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -22,8 +37,14 @@
 
 	<main>
 		<section id="start">
-			<h2>Welcome</h2>
-			<p>This is the home page of the blog CMS project.</p>
+			<h2>Compile</h2>
+			<p>Render test with Reader compile.</p>
+
+			<h3>Input</h3>
+			<pre><?= $input ?></pre>
+
+			<h3>Output</h3>
+			<pre><?= $output ?></pre>
 		</section>
 	</main>
 
