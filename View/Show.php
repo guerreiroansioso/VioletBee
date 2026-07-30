@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../Service/Reader.php';
 
 $reader = new Reader();
-$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item.\n\n[Example](https://example.com)\n\n## Heading 2\n\n### Heading 3\n\nThis is a note.";
+$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item.\n\n[Example](https://example.com)\n\n## Heading 2\n\n### Heading 3\n\nThis is a note.\n\n- Hi;\n- Second item;\n- Third item.";
 $compiled = $reader->compile($text);
 $html = $reader->render($compiled);
 

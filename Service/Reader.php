@@ -51,16 +51,17 @@ final class Reader {
 
 		/* 0 = Skip, 1 = Text, 2 = Heading, */
 		/* 3 = List, 4 = End block, 5 = Link, 6 = End link */
+		/* 7 = Image, 8 = End image */
 		$matrix = [
-			[1, 0, 0, 0, 4, 0, 0, 5, 0, 0, 0, 0, 0],
+			[1, 0, 0, 0, 4, 0, 0, 7, 0, 0, 0, 0, 0],
 			[2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[5, 0, 0, 0, 6, 0, 0, 5, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+			[7, 0, 0, 0, 8, 0, 0, 7, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
@@ -124,6 +125,18 @@ final class Reader {
 
 				case 6:
 					$block['type'] = 'Link';
+					$block['text'] = $block['text'] . $match;
+					$blocks[] = $block;
+					$block = ['type' => 'Paragraph', 'text' => ''];
+					break;
+
+				case 7:
+					$block['type'] = 'Image';
+					$block['text'] = $block['text'] . $match;
+					break;
+
+				case 8:
+					$block['type'] = 'Image';
 					$block['text'] = $block['text'] . $match;
 					$blocks[] = $block;
 					$block = ['type' => 'Paragraph', 'text' => ''];
