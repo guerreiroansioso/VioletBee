@@ -167,6 +167,14 @@ final class Reader {
 					case 'Paragraph':
 						$html .= '<p>' . $text . '</p>';
 						break;
+
+					case 'Link':
+						$labelEnd = strpos($text, ']');
+						$urlStart = strpos($text, '(');
+						$label = substr($text, 1, $labelEnd - 1);
+						$url = substr($text, $urlStart + 1, -1);
+						$html .= '<a href="' . $url . '">' . $label . '</a>';
+						break;
 				}
 			}
 

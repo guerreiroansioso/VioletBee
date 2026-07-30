@@ -8,7 +8,11 @@ $compiled = $reader->compile($text);
 
 $input = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 $output = htmlspecialchars(
-	json_encode($compiled, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), ENT_QUOTES,
+	json_encode(
+		$compiled,
+		JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+	),
+	ENT_QUOTES,
 	'UTF-8'
 );
 
