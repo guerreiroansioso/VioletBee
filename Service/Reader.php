@@ -160,6 +160,10 @@ final class Reader {
 			}
 		}
 
+		if ($block['text'] !== '') {
+			$blocks[] = $block;
+		}
+
         foreach ($blocks as &$block) {
             $block['text'] = trim($block['text']);
 
@@ -168,7 +172,7 @@ final class Reader {
 			}
         }
 
-			return $blocks;
+		return $blocks;
 	}
 
 	public function render(array $blocks): string {
@@ -186,13 +190,13 @@ final class Reader {
 					break;
 
 				case 'List':
-					if (($blocks[$i - 1]['type']) !== 'List') {
+					if (($blocks[$i - 1]['type'] ?? null) !== 'List') {
 						$html .= '<ul>';
 					}
 
 					$html .= '<li>' . $text . '</li>';
 
-					if (($blocks[$i + 1]['type']) !== 'List') {
+					if (($blocks[$i + 1]['type'] ?? null) !== 'List') {
 						$html .= '</ul>';
 					}
 					break;
