@@ -9,6 +9,7 @@ $routes = [
 	'/posts' => $viewPath . '/Posts.php',
 	'/compile' => $viewPath . '/Compile.php',
 	'/show' => $viewPath . '/Show.php',
+	'/example' => $viewPath . '/Example.php',
 	'/404' => $viewPath . '/NotFound.php',
 ];
 

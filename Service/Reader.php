@@ -229,6 +229,7 @@ final class Reader {
 					$urlStart = strpos($text, '(');
 					$label = substr($text, 2, $labelEnd - 2);
 					$url = substr($text, $urlStart + 1, -1);
+					$html .= '<br>';
 					$html .= '<img src="' . $url . '" alt="' . $label . '">';
 					break;
 			}

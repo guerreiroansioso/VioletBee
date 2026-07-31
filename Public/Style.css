@@ -1,0 +1,48 @@
+body {
+	display: grid;
+	grid-template-areas:
+		"header header header"
+		"menu menu menu"
+		"author author sidebar"
+		"footer footer footer";
+	grid-template-columns: 1fr 2fr 1fr;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+header {
+	grid-area: header;
+	background: #dbeafe;
+}
+
+menu {
+	grid-area: menu;
+	background: #dcfce7;
+	margin: 0;
+	padding: 0;
+}
+
+menu ul {
+	display: flex;
+	gap: 16px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	align-items: center;
+	justify-content: center;
+}
+
+author {
+	grid-area: author;
+	background: #fef3c7;
+}
+
+sidebar {
+	grid-area: sidebar;
+	background: #fce7f3;
+}
+
+footer {
+	grid-area: footer;
+	background: #e5e7eb;
+}
