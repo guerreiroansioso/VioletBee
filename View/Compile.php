@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../Service/Reader.php';
 
 $reader = new Reader();
-$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item.\n\n[Example](https://example.com)\n\n## Heading 2\n\n![Image of a Violet Carpenter Bee](https://schoolofbees.com/wp-content/uploads/2019/04/blue_Leafcutter_Bee.jpg)\n\n### Heading 3\n\nThis is a note.\n\n- Hi;\n- Second item;\n- Third item.\n\n![Alt for a sample image](image.png)";
+$text = "# Heading\n\nRender test of compiler.\n- Hi;\n- Second item;\n- Third item.\n\n[Example](https://example.com)\n\n## Heading 2\n\n![Image of a Violet Carpenter Bee](https://schoolofbees.com/wp-content/uploads/2019/04/blue_Leafcutter_Bee.jpg)\n\n### Heading 3\n\nThis is a note.\n\n- Hi;\n- Second item;\n- Third item.\n\n![Alt for a sample image](image.png)\n\n# Menu\n\n- Item1;\n\n- Item2.";
 $compiled = $reader->compile($text);
 
 $input = htmlspecialchars($text, ENT_QUOTES, 'UTF-8');

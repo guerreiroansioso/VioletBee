@@ -162,59 +162,105 @@ final class Reader {
 
         foreach ($blocks as &$block) {
             $block['text'] = trim($block['text']);
+
+			if ($block['type'] === 'Heading') {
+				$block['special'] = $this->special($block['text']);
+			}
         }
 
 			return $blocks;
+	}
+
+	public function render(array $blocks): string {
+		$html = '';
+
+		foreach ($blocks as $i => $block) {
+			$text = $block['text'];
+
+			switch ($block['type']) {
+				case 'Heading':
+					$level = $block['level'];
+					$begin = '<h' . $level . '>';
+					$end = '</h' . $level . '>';
+					$html .= $begin . $text . $end;
+					break;
+
+				case 'List':
+					if (($blocks[$i - 1]['type']) !== 'List') {
+						$html .= '<ul>';
+					}
+
+					$html .= '<li>' . $text . '</li>';
+
+					if (($blocks[$i + 1]['type']) !== 'List') {
+						$html .= '</ul>';
+					}
+					break;
+
+				case 'Paragraph':
+					$html .= '<p>' . $text . '</p>';
+					break;
+
+				case 'Link':
+					$labelEnd = strpos($text, ']');
+					$urlStart = strpos($text, '(');
+					$label = substr($text, 1, $labelEnd - 1);
+					$url = substr($text, $urlStart + 1, -1);
+					$html .= '<a href="' . $url . '">' . $label . '</a>';
+					break;
+
+				case 'Image':
+					$labelEnd = strpos($text, ']');
+					$urlStart = strpos($text, '(');
+					$label = substr($text, 2, $labelEnd - 2);
+					$url = substr($text, $urlStart + 1, -1);
+					$html .= '<img src="' . $url . '" alt="' . $label . '">';
+					break;
+			}
 		}
 
-		public function render(array $blocks): string {
-			$html = '';
+		return $html;
+	}
 
-			foreach ($blocks as $i => $block) {
-				$text = $block['text'];
-
-				switch ($block['type']) {
-					case 'Heading':
-						$level = $block['level'];
-                        $begin = '<h' . $level . '>';
-                        $end = '</h' . $level . '>';
-						$html .= $begin . $text . $end;
-						break;
-
-					case 'List':
-						if (($blocks[$i - 1]['type']) !== 'List') {
-							$html .= '<ul>';
-						}
-
-						$html .= '<li>' . $text . '</li>';
-
-						if (($blocks[$i + 1]['type']) !== 'List') {
-							$html .= '</ul>';
-						}
-						break;
-
-					case 'Paragraph':
-						$html .= '<p>' . $text . '</p>';
-						break;
-
-					case 'Link':
-						$labelEnd = strpos($text, ']');
-						$urlStart = strpos($text, '(');
-						$label = substr($text, 1, $labelEnd - 1);
-						$url = substr($text, $urlStart + 1, -1);
-						$html .= '<a href="' . $url . '">' . $label . '</a>';
-						break;
-
-					case 'Image':
-						$labelEnd = strpos($text, ']');
-						$urlStart = strpos($text, '(');
-						$label = substr($text, 2, $labelEnd - 2);
-						$url = substr($text, $urlStart + 1, -1);
-						$html .= '<img src="' . $url . '" alt="' . $label . '">';
-						break;
-				}
-			}
-
-			return $html;
+	private function special(string $text): string {
+		switch ($text) {
+			case 'Header':
+				return 'Header';
+			case 'Menu':
+				return 'Menu';
+			case 'Author':
+				return 'Author';
+			case 'Sidebar':
+				return 'Sidebar';
+			case 'Footer':
+				return 'Footer';
+			default:
+				return 'None';
 		}
 	}
+
+	private function header(bool $start): string {
+		if ($start) { return '<header>'; }
+		else { return '</header>'; }
+	}
+
+	private function menu(bool $start): string {
+		if ($start) { return '<menu>'; }
+		else { return '</menu>'; }
+	}
+
+	private function author(bool $start): string {
+		if ($start) { return '<author>'; }
+		else { return '</author>'; }
+	}
+
+	private function sidebar(bool $start): string {
+		if ($start) { return '<sidebar>'; }
+		else { return '</sidebar>'; }
+	}
+
+	private function footer(bool $start): string {
+		if ($start) { return '<footer>'; }
+		else { return '</footer>'; }
+	}
+}       
