@@ -177,12 +177,23 @@ final class Reader {
 
 	public function render(array $blocks): string {
 		$html = '';
+		$special = 'None';
 
 		foreach ($blocks as $i => $block) {
 			$text = $block['text'];
 
 			switch ($block['type']) {
 				case 'Heading':
+					if (($block['special'] ?? 'None') !== 'None') {
+						if ($special !== 'None') {
+							$html .= $this->select($special, false);
+						}
+
+						$special = $block['special'];
+						$html .= $this->select($special, true);
+						break;
+					}
+
 					$level = $block['level'];
 					$begin = '<h' . $level . '>';
 					$end = '</h' . $level . '>';
@@ -223,7 +234,28 @@ final class Reader {
 			}
 		}
 
+		if ($special !== 'None') {
+			$html .= $this->select($special, false);
+		}
+
 		return $html;
+	}
+
+	private function select(string $special, bool $start): string {
+		switch ($special) {
+			case 'Header':
+				return $this->header($start);
+			case 'Menu':
+				return $this->menu($start);
+			case 'Author':
+				return $this->author($start);
+			case 'Sidebar':
+				return $this->sidebar($start);
+			case 'Footer':
+				return $this->footer($start);
+			default:
+				return '';
+		}
 	}
 
 	private function special(string $text): string {
